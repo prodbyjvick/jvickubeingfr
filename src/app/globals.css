@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-bg: #0a0a0b;
+  --color-card: #141416;
+  --color-card-hover: #1a1a1d;
+  --color-ink: #f4f4f5;
+  --color-muted: #a1a1aa;
+  --color-line: #27272a;
+  --color-accent: #b8ff3c;
+  --color-accent-dim: #9ae62e;
+  --color-accent-ink: #0a0a0b;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-syne), var(--font-geist-sans), sans-serif;
+}
+
+html {
+  background: #0a0a0b;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  min-height: 100%;
+}
+
+::selection {
+  background: #b8ff3c;
+  color: #0a0a0b;
+}
+
+body::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+}
