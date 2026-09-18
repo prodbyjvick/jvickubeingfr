@@ -31,7 +31,7 @@ export function verifyFileUrl(token: string) {
   return { orderItemId, expiresAt };
 }
 
-export function fileUrlFor(orderItemId: string, ttlSeconds = 60 * 60) {
+export function fileUrlFor(orderItemId: string, ttlSeconds = 15 * 60) {
   const expiresAt = Math.floor(Date.now() / 1000) + ttlSeconds;
   const token = signFileUrl(orderItemId, expiresAt);
   return `/api/download?token=${encodeURIComponent(token)}`;

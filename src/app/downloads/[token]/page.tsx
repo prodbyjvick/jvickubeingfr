@@ -29,7 +29,7 @@ export default async function DownloadsPage({
       <p className="text-xs uppercase tracking-[0.22em] text-accent">Download centre</p>
       <h1 className="mt-2 font-display text-4xl font-semibold">Your masters</h1>
       <p className="mt-3 text-sm text-muted">
-        Sent to {order.email}. Each file link is signed and time-limited (one hour). Refresh this page for a new link.
+        Sent to {order.email}. Each file link is signed and expires after 15 minutes. Refresh this page for a new link.
         {demo ? " This was a local demo checkout — no Stripe charge was taken." : ""}
       </p>
       <ul className="mt-8 space-y-4">

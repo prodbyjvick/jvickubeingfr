@@ -1,21 +1,23 @@
 @import "tailwindcss";
 
 @theme inline {
+  --color-black: #000000;
   --color-bg: #0a0a0b;
-  --color-card: #141416;
-  --color-card-hover: #1a1a1d;
-  --color-ink: #f4f4f5;
-  --color-muted: #a1a1aa;
-  --color-line: #27272a;
-  --color-accent: #b8ff3c;
-  --color-accent-dim: #9ae62e;
-  --color-accent-ink: #0a0a0b;
+  --color-card: #000000;
+  --color-card-hover: #111111;
+  --color-ink: #ffffff;
+  --color-muted: #d4d4d4;
+  --color-line: #3d3d3d;
+  --color-brand: #6b00b8;
+  --color-accent: #6b00b8;
+  --color-glow: #8e00ec;
+  --color-accent-ink: #ffffff;
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-syne), var(--font-geist-sans), sans-serif;
 }
 
 html {
-  background: #0a0a0b;
+  background: #000000;
 }
 
 body {
@@ -26,8 +28,18 @@ body {
 }
 
 ::selection {
-  background: #b8ff3c;
-  color: #0a0a0b;
+  background: #6b00b8;
+  color: #ffffff;
+}
+
+a.bg-accent:hover,
+button.bg-accent:hover {
+  background-color: var(--color-glow);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-glow);
+  outline-offset: 3px;
 }
 
 body::before {
@@ -36,7 +48,7 @@ body::before {
   position: fixed;
   inset: 0;
   z-index: 80;
-  opacity: 0.035;
+  opacity: 0.04;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 

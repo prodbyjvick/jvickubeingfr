@@ -28,7 +28,7 @@ export function MiniPlayer() {
         />
         <div className="min-w-0 flex-1">
           <Link href={player.current.slug ? `/beats/${player.current.slug}` : "/catalog"} className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-ink hover:text-accent">{player.current.title}</p>
+            <p className="truncate text-sm font-medium text-ink hover:text-glow">{player.current.title}</p>
             <p className="text-[11px] uppercase tracking-[0.16em] text-muted">Tagged preview</p>
           </Link>
         </div>

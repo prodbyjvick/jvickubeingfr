@@ -4,10 +4,11 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { isAdmin } from "@/lib/admin";
+import { isAdmin, assertSameOrigin } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
 import { uploadRoot } from "@/lib/storage";
 import { dummyWaveform, waveformFromWavFile } from "@/lib/waveform";
+import { assertAudioOrZipUpload, assertCoverUpload } from "@/lib/uploads";
 
 function slugify(input: string) {
   return input
@@ -37,7 +38,13 @@ async function writeMaster(file: File | null, filename: string) {
 }
 
 export async function saveBeat(formData: FormData) {
+  await assertSameOrigin();
   if (!(await isAdmin())) throw new Error("Unauthorised");
+
+  const coverFile = formData.get("cover") as File | null;
+  const previewFile = formData.get("preview") as File | null;
+  assertCoverUpload(coverFile);
+  assertAudioOrZipUpload(previewFile, "Preview");
 
   const id = String(formData.get("id") || "");
   const title = String(formData.get("title") || "").trim();
@@ -70,7 +77,6 @@ export async function saveBeat(formData: FormData) {
   );
 
   let waveform = existing?.waveform || JSON.stringify(dummyWaveform(slug.length));
-  const previewFile = formData.get("preview") as File | null;
   if (preview && previewFile && preview.toLowerCase().endsWith(".wav")) {
     waveform = JSON.stringify(waveformFromWavFile(path.join(process.cwd(), "public", preview)));
   }
@@ -112,6 +118,7 @@ export async function saveBeat(formData: FormData) {
 
   const licences = await prisma.licence.findMany();
   for (const licence of licences) {
+    assertAudioOrZipUpload(formData.get(`master-${licence.slug}`) as File | null, licence.name);
     const priceRaw = String(formData.get(`price-${licence.slug}`) || "").trim();
     const pounds = Number(priceRaw);
     const pricePence = Number.isFinite(pounds) ? Math.round(pounds * 100) : 0;
@@ -144,6 +151,7 @@ export async function saveBeat(formData: FormData) {
 }
 
 export async function deleteBeat(formData: FormData) {
+  await assertSameOrigin();
   if (!(await isAdmin())) throw new Error("Unauthorised");
   const id = String(formData.get("id") || "");
   await prisma.beat.delete({ where: { id } });

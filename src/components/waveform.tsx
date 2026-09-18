@@ -41,7 +41,7 @@ export function Waveform({
             key={index}
             className={cn(
               "inline-block w-full rounded-full transition-colors",
-              active ? "bg-accent" : "bg-zinc-600",
+              active ? "bg-accent" : "bg-ink/25",
               onSeek && "cursor-pointer",
               barClassName,
             )}

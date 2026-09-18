@@ -1,4 +1,5 @@
 import { saveBeat } from "@/app/admin/actions";
+import { AUDIO_ACCEPT, COVER_ACCEPT } from "@/lib/uploads";
 import type { Beat, BeatLicence, Licence } from "@prisma/client";
 
 type BeatWithLicences = Beat & { licences: BeatLicence[] };
@@ -95,11 +96,11 @@ export function AdminBeatForm({
       </div>
       <label className="block text-sm">
         Cover image
-        <input type="file" name="cover" accept="image/*,.svg" className="mt-2 block w-full text-muted" />
+        <input type="file" name="cover" accept={COVER_ACCEPT} className="mt-2 block w-full text-muted" />
       </label>
       <label className="block text-sm">
         Tagged preview (MP3 or WAV, public)
-        <input type="file" name="preview" accept="audio/*" className="mt-2 block w-full text-muted" />
+        <input type="file" name="preview" accept={AUDIO_ACCEPT} className="mt-2 block w-full text-muted" />
       </label>
       <div className="space-y-4">
         <h2 className="font-display text-xl">Licence prices and masters</h2>
@@ -122,7 +123,7 @@ export function AdminBeatForm({
               <input
                 type="file"
                 name={`master-${licence.slug}`}
-                accept="audio/*"
+                accept={AUDIO_ACCEPT}
                 className="mt-2 block w-full text-muted"
               />
             </label>
