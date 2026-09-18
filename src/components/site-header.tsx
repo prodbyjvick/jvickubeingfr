@@ -19,7 +19,7 @@ export function SiteHeader() {
         </Link>
         <nav className="hidden items-center gap-8 text-sm text-muted md:flex">
           {nav.map((item) => (
-            <Link key={item.href} href={item.href} className="transition hover:text-accent">
+            <Link key={item.href} href={item.href} className="transition hover:text-glow">
               {item.label}
             </Link>
           ))}
@@ -27,7 +27,7 @@ export function SiteHeader() {
         <div className="flex items-center gap-2">
           <Link
             href="/cart"
-            className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-line text-ink hover:border-accent hover:text-accent"
+            className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-line text-ink hover:border-glow hover:text-glow"
             aria-label={`Cart, ${count} items`}
           >
             <ShoppingBag size={18} />
@@ -53,7 +53,7 @@ export function SiteHeader() {
             <Link
               key={item.href}
               href={item.href}
-              className="py-2 text-sm text-muted hover:text-accent"
+              className="py-2 text-sm text-muted hover:text-glow"
               onClick={() => setOpen(false)}
             >
               {item.label}

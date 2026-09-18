@@ -119,7 +119,7 @@ function escapeXml(value) {
 }
 
 function coverSvg(beat) {
-  const accent = "#A500FF";
+  const accent = "#6B00B8";
   const motifs = {
     moon: `
       <circle cx="400" cy="340" r="160" fill="none" stroke="${accent}" stroke-width="3" opacity="0.9"/>

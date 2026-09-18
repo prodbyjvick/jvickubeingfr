@@ -18,13 +18,13 @@ export function SiteFooter() {
           <ul className="mt-3 space-y-2 text-sm">
             {nav.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className="text-ink/90 hover:text-accent">
+                <Link href={item.href} className="text-ink/90 hover:text-glow">
                   {item.label}
                 </Link>
               </li>
             ))}
             <li>
-              <Link href="/admin/login" className="text-ink/90 hover:text-accent">
+              <Link href="/admin/login" className="text-ink/90 hover:text-glow">
                 Admin
               </Link>
             </li>

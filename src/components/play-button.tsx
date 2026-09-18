@@ -24,7 +24,7 @@ export function PlayButton({
       onClick={onClick}
       aria-label={label}
       className={cn(
-        "inline-flex items-center justify-center rounded-full bg-accent text-accent-ink shadow-[0_0_0_8px_rgba(165,0,255,0.22)] transition hover:brightness-110",
+        "inline-flex items-center justify-center rounded-full bg-accent text-accent-ink shadow-[0_0_0_8px_rgba(142,0,236,0.28)] transition hover:bg-glow",
         dim,
       )}
     >

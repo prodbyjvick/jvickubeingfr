@@ -7,9 +7,9 @@
   --color-ink: #ffffff;
   --color-muted: #c9c4d4;
   --color-line: #3b2454;
-  --color-brand: #8e00ec;
-  --color-accent: #a500ff;
-  --color-accent-dim: #7a00cc;
+  --color-brand: #6b00b8;
+  --color-accent: #6b00b8;
+  --color-glow: #8e00ec;
   --color-accent-ink: #ffffff;
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-syne), var(--font-geist-sans), sans-serif;
@@ -27,8 +27,13 @@ body {
 }
 
 ::selection {
-  background: #a500ff;
+  background: #6b00b8;
   color: #ffffff;
+}
+
+a.bg-accent:hover,
+button.bg-accent:hover {
+  background-color: var(--color-glow);
 }
 
 body::before {

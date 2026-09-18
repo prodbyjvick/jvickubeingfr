@@ -1,6 +1,7 @@
 export const colors = {
-  brand: "#8E00EC",
-  accent: "#A500FF",
+  brand: "#6B00B8",
+  accent: "#6B00B8",
+  glow: "#8E00EC",
   accentInk: "#FFFFFF",
   background: "#0A0A0B",
 };

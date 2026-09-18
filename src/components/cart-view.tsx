@@ -61,14 +61,14 @@ export function CartView() {
           <div key={`${item.beatId}-${item.licenceId}`} className="flex gap-4 rounded-2xl border border-line bg-card p-4">
             <CoverImage src={item.coverPath} alt="" className="h-20 w-20 rounded-xl object-cover" />
             <div className="min-w-0 flex-1">
-              <Link href={`/beats/${item.slug}`} className="font-medium hover:text-accent">
+              <Link href={`/beats/${item.slug}`} className="font-medium hover:text-glow">
                 {item.title}
               </Link>
               <p className="mt-1 text-sm text-muted">{item.licenceName}</p>
               <button
                 type="button"
                 onClick={() => cart.removeItem(item.beatId, item.licenceId)}
-                className="mt-2 text-xs text-muted hover:text-accent"
+                className="mt-2 text-xs text-muted hover:text-glow"
               >
                 Remove
               </button>

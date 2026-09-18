@@ -14,7 +14,7 @@ export function BeatCard({ beat }: { beat: BeatView }) {
   const progress = player.current?.id === beat.id ? player.progress : 0;
 
   return (
-    <article className="group rounded-2xl border border-line bg-card p-3 transition hover:border-accent/40 hover:bg-card-hover">
+    <article className="group rounded-2xl border border-line bg-card p-3 transition hover:border-glow/40 hover:bg-card-hover">
       <Link href={`/beats/${beat.slug}`} className="relative block overflow-hidden rounded-xl">
         <CoverImage
           src={beat.coverPath}
