@@ -2,7 +2,7 @@
 
 Self-hosted beat store for **prodbyjvick** — dark, direct, and independent of BeatStars. Buyers pay in GBP via Stripe Checkout (Apple Pay included on supported devices). Paid masters unlock through signed, time-limited download URLs. Tagged previews stay public for streaming.
 
-Brand colours: purple `#9000F0` / `#A500FF` on near-black, with white type. Rename the store in `src/lib/brand.ts`.
+Brand colours: purple `#8E00EC` / `#A500FF` on near-black, with white type. Rename the store in `src/lib/brand.ts`.
 
 ## Stack
 
