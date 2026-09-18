@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Beat {
+  id             String         @id @default(cuid())
+  slug           String         @unique
+  title          String
+  genre          String
+  bpm            Int
+  musicalKey     String
+  description    String
+  coverPath      String
+  previewPath    String
+  waveform       String
+  tags           String
+  featured       Boolean        @default(false)
+  published      Boolean        @default(true)
+  exclusiveSold  Boolean        @default(false)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  licences       BeatLicence[]
+  orderItems     OrderItem[]
+}
+
+model Licence {
+  id           String         @id @default(cuid())
+  slug         String         @unique
+  name         String
+  summary      String
+  terms        String
+  features     String
+  fileLabel    String
+  sortOrder    Int
+  beatLicences BeatLicence[]
+  orderItems   OrderItem[]
+}
+
+model BeatLicence {
+  id         String   @id @default(cuid())
+  beatId     String
+  licenceId  String
+  pricePence Int
+  masterPath String
+  beat       Beat     @relation(fields: [beatId], references: [id], onDelete: Cascade)
+  licence    Licence  @relation(fields: [licenceId], references: [id], onDelete: Cascade)
+
+  @@unique([beatId, licenceId])
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  email           String
+  stripeSessionId String?     @unique
+  stripePaymentId String?
+  status          String      @default("pending")
+  totalPence      Int
+  currency        String      @default("gbp")
+  downloadToken   String      @unique
+  createdAt       DateTime    @default(now())
+  paidAt          DateTime?
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id          String  @id @default(cuid())
+  orderId     String
+  beatId      String
+  licenceId   String
+  title       String
+  licenceName String
+  pricePence  Int
+  masterPath  String
+  order       Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  beat        Beat    @relation(fields: [beatId], references: [id])
+  licence     Licence @relation(fields: [licenceId], references: [id])
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  message   String
+  createdAt DateTime @default(now())
+}
