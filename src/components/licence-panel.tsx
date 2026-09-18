@@ -58,7 +58,7 @@ export function LicencePanel({ beat }: { beat: BeatView }) {
               key={licence.id}
               className={cn(
                 "block cursor-pointer rounded-2xl border p-4 transition",
-                active ? "border-accent bg-accent/8 shadow-[0_0_0_1px_#b8ff3c]" : "border-line hover:border-zinc-500",
+                active ? "border-accent bg-accent/15 shadow-[0_0_0_1px_#A500FF]" : "border-line hover:border-zinc-500",
               )}
             >
               <div className="flex items-start justify-between gap-3">
@@ -66,7 +66,7 @@ export function LicencePanel({ beat }: { beat: BeatView }) {
                   <input
                     type="radio"
                     name="licence"
-                    className="accent-[#b8ff3c]"
+                    className="accent-[#A500FF]"
                     checked={active}
                     onChange={() => setSelectedId(licence.id)}
                   />

@@ -13,5 +13,6 @@ export function stripeConfigured() {
 }
 
 export function demoCheckoutEnabled() {
-  return process.env.ALLOW_DEMO_CHECKOUT === "true" && process.env.NODE_ENV !== "production";
+  if (process.env.NODE_ENV === "production") return false;
+  return process.env.ALLOW_DEMO_CHECKOUT === "true";
 }

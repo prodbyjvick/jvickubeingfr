@@ -2,7 +2,7 @@
 
 Self-hosted beat store for **prodbyjvick** — dark, direct, and independent of BeatStars. Buyers pay in GBP via Stripe Checkout (Apple Pay included on supported devices). Paid masters unlock through signed, time-limited download URLs. Tagged previews stay public for streaming.
 
-Rename the brand in `src/lib/brand.ts` (`name`, `producer`, `email`, `instagram`).
+Brand colours: purple `#9000F0` / `#A500FF` on near-black, with white type. Rename the store in `src/lib/brand.ts`.
 
 ## Stack
 
@@ -17,6 +17,7 @@ You need Node 20+ and `ffmpeg` on your PATH (used once to encode demo MP3s).
 
 ```bash
 cp .env.example .env
+# Set ADMIN_PASSWORD to 12+ characters and a long ADMIN_SESSION_SECRET
 npm install
 npm run setup
 npm run dev
@@ -26,7 +27,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 `npm run setup` generates placeholder cover art and demo audio, pushes the Prisma schema, and seeds eight beats (including **Midnight Run**) with four licence tiers.
 
-Default admin password is `change-me-now` (override with `ADMIN_PASSWORD`). Sign in at `/admin/login`.
+Sign in at `/admin/login`. `ADMIN_PASSWORD` must be at least 12 characters.
 
 ### Environment variables
 
@@ -37,11 +38,21 @@ Default admin password is `change-me-now` (override with `ADMIN_PASSWORD`). Sign
 | `STRIPE_SECRET_KEY` | Stripe secret key (`sk_test_…` while developing). |
 | `STRIPE_WEBHOOK_SECRET` | From `stripe listen` or the Dashboard webhook. |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Publishable key (reserved for future client-side Stripe.js; Checkout currently uses the secret key on the server). |
-| `ADMIN_PASSWORD` | Admin sign-in. |
-| `ADMIN_SESSION_SECRET` | HMAC secret for the admin cookie. Use a long random string. |
-| `DOWNLOAD_SECRET` | HMAC secret for signed download URLs. |
+| `ADMIN_PASSWORD` | Admin sign-in. Minimum 12 characters. Production rejects placeholders such as `change-me`. |
+| `ADMIN_SESSION_SECRET` | HMAC secret for the httpOnly admin cookie (24+ characters). |
+| `DOWNLOAD_SECRET` | HMAC secret for signed download URLs (15-minute TTL). |
 | `UPLOAD_DIR` | Directory for paid masters (default `uploads/`, outside `public/`). |
-| `ALLOW_DEMO_CHECKOUT` | `true` only in development. If Stripe keys are still placeholders, checkout creates a paid demo order so you can test the download centre. **Must be false in production.** |
+| `ALLOW_DEMO_CHECKOUT` | `true` only in local development. **Forced `false` when `NODE_ENV=production`.** Keep it `false` on Vercel. |
+
+## Security (read before you take a card payment)
+
+- **Never take payment off Stripe.** No bank-transfer “I’ll email the WAV”, PayPal.me, Instagram checkout, or mystery download links. Buyers pay on Stripe Checkout only.
+- **Change every secret before deploy:** `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`, `DOWNLOAD_SECRET`, Stripe live keys, and `APP_URL`.
+- Set **`ALLOW_DEMO_CHECKOUT=false`** on the live site. Production code ignores the flag even if someone sets it to true.
+- Masters never sit in `/public`. They download only via signed URLs (`/api/download?token=…`) that expire after 15 minutes. Refresh the download centre for a new link.
+- Admin uploads accept **audio and ZIP** for previews/masters, and **images** for covers. HTML, JS and executables are rejected.
+- Admin login is rate-limited, uses httpOnly `Secure` cookies (`SameSite=Strict`), and mutations check the request origin.
+- Responses send CSP, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, and `frame-ancestors 'none'`.
 
 ## Stripe (test mode)
 
@@ -57,7 +68,7 @@ Paste the printed `whsec_…` into `STRIPE_WEBHOOK_SECRET`.
 
 4. Use [test cards](https://docs.stripe.com/testing). `4242 4242 4242 4242` succeeds. Success URL opens the download centre; the webhook (or the success page itself) marks the order paid.
 
-If keys are still `replace_me` and `ALLOW_DEMO_CHECKOUT=true`, checkout skips Stripe and unlocks files locally so you can demo the UI.
+To exercise the download UI without Stripe keys, set `ALLOW_DEMO_CHECKOUT=true` **locally only**. That path is disabled in production.
 
 ### Apple Pay
 
@@ -71,9 +82,9 @@ You do not add a separate Apple Pay button on-site; the Checkout page presents i
 
 ### Going live
 
-1. Switch `.env` to **live** keys (`sk_live_…`, live webhook secret).
-2. Set `ALLOW_DEMO_CHECKOUT=false`.
-3. Rotate `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`, and `DOWNLOAD_SECRET`.
+1. Switch to **live** Stripe keys (`sk_live_…`, live webhook secret).
+2. Confirm `ALLOW_DEMO_CHECKOUT=false`.
+3. Rotate `ADMIN_PASSWORD` (12+ characters, not a placeholder), `ADMIN_SESSION_SECRET`, and `DOWNLOAD_SECRET`.
 4. Add a production webhook endpoint: `https://YOUR_DOMAIN/api/webhooks/stripe` listening for `checkout.session.completed`.
 5. Verify the Apple Pay domain on the live Stripe account.
 
@@ -85,7 +96,7 @@ You do not add a separate Apple Pay button on-site; the Checkout page presents i
 4. Set GBP prices for Basic MP3 Lease, Premium WAV Lease, Unlimited Lease, and Exclusive Rights.
 5. Publish. Exclusive purchases mark the beat as sold and stop further checkouts.
 
-Previews live under `public/media/` (streamable). Masters live under `uploads/` and are only served through `/api/download?token=…` HMAC URLs that expire after one hour. The download centre at `/downloads/[token]` mints fresh links.
+Previews live under `public/media/` (streamable). Masters live under `uploads/` and are only served through `/api/download?token=…` HMAC URLs that expire after 15 minutes. The download centre at `/downloads/[token]` mints fresh links.
 
 ## Deploy on Vercel
 
@@ -104,7 +115,8 @@ datasource db {
 3. Set `DATABASE_URL` on Vercel to the pooled Postgres URL.
 4. Store paid files on persistent object storage (S3, Cloudflare R2, or Vercel Blob) and point `UPLOAD_DIR` at a writable disk only if you use a VPS. On Vercel, swap `src/lib/storage.ts` to your bucket when you outgrow local disk.
 5. Set `APP_URL` to `https://your-domain`.
-6. Deploy. The `postinstall` script runs `prisma generate`. After first deploy, run `npx prisma db push` (or `migrate deploy`) against production, then seed if you want the demo catalogue:
+6. Set `ALLOW_DEMO_CHECKOUT=false` and strong admin/download secrets.
+7. Deploy. The `postinstall` script runs `prisma generate`. After first deploy, run `npx prisma db push` (or `migrate deploy`) against production, then seed if you want the demo catalogue:
 
 ```bash
 npx prisma db push

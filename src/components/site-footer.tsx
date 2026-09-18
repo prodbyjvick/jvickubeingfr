@@ -7,7 +7,7 @@ export function SiteFooter() {
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-3">
         <div>
           <p className="font-display text-lg font-bold tracking-[0.14em]">
-            {brand.shortName} <span className="text-accent">BEATS</span>
+            {brand.shortName} <span className="text-brand">BEATS</span>
           </p>
           <p className="mt-3 max-w-xs text-sm text-muted">
             Self-hosted store for {brand.producer}. Buyers pay via Stripe; files unlock the moment payment clears.

@@ -1,10 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createPaidOrder, resolveCheckoutItems } from "@/lib/checkout";
+import { requestSameOrigin } from "@/lib/admin";
+import { clientKey, rateLimit } from "@/lib/rate-limit";
 import { demoCheckoutEnabled, getStripe, stripeConfigured } from "@/lib/stripe";
 import { publicAppUrl } from "@/lib/storage";
 
 export async function POST(request: NextRequest) {
   try {
+    if (!requestSameOrigin(request)) {
+      return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
+    }
+    const limited = rateLimit(clientKey(request, "checkout"), 20, 10 * 60 * 1000);
+    if (!limited.ok) {
+      return NextResponse.json({ error: "Too many checkout attempts. Try again shortly." }, { status: 429 });
+    }
+
     const body = (await request.json()) as {
       email?: string;
       items?: { beatId: string; licenceId: string }[];
@@ -26,7 +36,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error:
-            "Stripe is not configured. Add STRIPE_SECRET_KEY or enable ALLOW_DEMO_CHECKOUT for local testing.",
+            "Stripe is not configured. Payments are taken only through Stripe Checkout — add live keys before going live.",
         },
         { status: 503 },
       );
