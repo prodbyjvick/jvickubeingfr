@@ -110,6 +110,14 @@ function ensureDirs() {
   }
 }
 
+function escapeXml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 function coverSvg(beat) {
   const accent = "#b8ff3c";
   const motifs = {
@@ -179,8 +187,8 @@ function coverSvg(beat) {
   <rect x="24" y="24" width="752" height="752" fill="none" stroke="${accent}" stroke-width="1" opacity="0.25"/>
   ${motifs[beat.motif]}
   <text x="48" y="84" fill="${accent}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="18" letter-spacing="6" opacity="0.8">JVICK BEATS</text>
-  <text x="48" y="730" fill="#f5f5f4" font-family="ui-sans-serif, system-ui, sans-serif" font-size="42" font-weight="700">${beat.title}</text>
-  <text x="48" y="762" fill="${accent}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16" letter-spacing="3">${beat.genre}  ·  ${beat.bpm} BPM  ·  ${beat.key}</text>
+  <text x="48" y="730" fill="#f5f5f4" font-family="ui-sans-serif, system-ui, sans-serif" font-size="42" font-weight="700">${escapeXml(beat.title)}</text>
+  <text x="48" y="762" fill="${accent}" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16" letter-spacing="3">${escapeXml(`${beat.genre}  ·  ${beat.bpm} BPM  ·  ${beat.key}`)}</text>
 </svg>`;
 }
 
