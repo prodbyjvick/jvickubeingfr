@@ -27,13 +27,13 @@ export default async function HomePage() {
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/catalog"
-              className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-ink hover:brightness-110"
+              className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-ink hover:bg-glow"
             >
               Browse beats
             </Link>
             <Link
               href="/licenses"
-              className="rounded-full border border-line px-6 py-3 text-sm font-medium hover:border-accent"
+              className="rounded-full border border-line px-6 py-3 text-sm font-medium hover:border-glow"
             >
               Licence terms
             </Link>

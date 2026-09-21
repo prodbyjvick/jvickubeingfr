@@ -15,11 +15,11 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-line/80 bg-bg/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="font-display text-lg font-bold tracking-[0.14em] text-ink">
-          {brand.shortName} <span className="text-accent">BEATS</span>
+          {brand.shortName} <span className="text-brand">BEATS</span>
         </Link>
         <nav className="hidden items-center gap-8 text-sm text-muted md:flex">
           {nav.map((item) => (
-            <Link key={item.href} href={item.href} className="transition hover:text-accent">
+            <Link key={item.href} href={item.href} className="transition hover:text-glow">
               {item.label}
             </Link>
           ))}
@@ -27,7 +27,7 @@ export function SiteHeader() {
         <div className="flex items-center gap-2">
           <Link
             href="/cart"
-            className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-line text-ink hover:border-accent hover:text-accent"
+            className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-line text-ink hover:border-glow hover:text-glow"
             aria-label={`Cart, ${count} items`}
           >
             <ShoppingBag size={18} />
@@ -53,7 +53,7 @@ export function SiteHeader() {
             <Link
               key={item.href}
               href={item.href}
-              className="py-2 text-sm text-muted hover:text-accent"
+              className="py-2 text-sm text-muted hover:text-glow"
               onClick={() => setOpen(false)}
             >
               {item.label}

@@ -22,7 +22,7 @@ export function FeaturedPanel({ beat }: { beat: BeatView }) {
   const playing = active && player.isPlaying;
 
   return (
-    <div className="rounded-3xl border border-line bg-card p-4 shadow-[0_20px_80px_rgba(0,0,0,0.35)] sm:p-5">
+    <div className="rounded-3xl border border-line bg-card p-4 shadow-[0_20px_80px_rgba(0,0,0,0.55)] sm:p-5">
       <p className="text-xs uppercase tracking-[0.22em] text-accent">Featured drop</p>
       <div className="mt-4 flex flex-col gap-4 sm:flex-row">
         <Link href={`/beats/${beat.slug}`} className="relative block w-full shrink-0 overflow-hidden rounded-2xl sm:w-44">

@@ -7,7 +7,7 @@ export function SiteFooter() {
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-3">
         <div>
           <p className="font-display text-lg font-bold tracking-[0.14em]">
-            {brand.shortName} <span className="text-accent">BEATS</span>
+            {brand.shortName} <span className="text-brand">BEATS</span>
           </p>
           <p className="mt-3 max-w-xs text-sm text-muted">
             Self-hosted store for {brand.producer}. Buyers pay via Stripe; files unlock the moment payment clears.
@@ -18,13 +18,13 @@ export function SiteFooter() {
           <ul className="mt-3 space-y-2 text-sm">
             {nav.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className="text-ink/90 hover:text-accent">
+                <Link href={item.href} className="text-ink/90 hover:text-glow">
                   {item.label}
                 </Link>
               </li>
             ))}
             <li>
-              <Link href="/admin/login" className="text-ink/90 hover:text-accent">
+              <Link href="/admin/login" className="text-ink/90 hover:text-glow">
                 Admin
               </Link>
             </li>
