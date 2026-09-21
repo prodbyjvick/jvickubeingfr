@@ -42,7 +42,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# sqlite
+# leftover local sqlite files (this app uses PostgreSQL)
 /prisma/*.db
 /prisma/*.db-journal
 /prisma/dev.db
