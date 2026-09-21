@@ -7,16 +7,23 @@ Brand colours: purple + black + white. Near-black / deep black backgrounds (`#0A
 ## Stack
 
 - Next.js App Router, TypeScript, Tailwind CSS
-- Prisma + SQLite locally (Postgres for Vercel — see below)
+- Prisma + PostgreSQL (Neon pooled URL on Vercel)
 - Stripe Checkout + webhook
 - Password-protected admin to CRUD beats and upload cover / preview / master files
 
 ## Local run
 
-You need Node 20+ and `ffmpeg` on your PATH (used once to encode demo MP3s).
+You need Node 20+, PostgreSQL, and `ffmpeg` on your PATH (used once to encode demo MP3s).
+
+Use a [Neon](https://neon.tech) database (same as production) or local Postgres. Example with Docker:
+
+```bash
+docker run --name jvick-pg -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=jvick -p 5432:5432 -d postgres:16
+```
 
 ```bash
 cp .env.example .env
+# Set DATABASE_URL + DATABASE_URL_UNPOOLED (same URL is fine without a pooler)
 # Set ADMIN_PASSWORD to 12+ characters and a long ADMIN_SESSION_SECRET
 npm install
 npm run setup
@@ -33,7 +40,8 @@ Sign in at `/admin/login`. `ADMIN_PASSWORD` must be at least 12 characters.
 
 | Variable | Purpose |
 | --- | --- |
-| `DATABASE_URL` | Prisma connection. Local default: `file:./dev.db` (relative to the `prisma/` folder). |
+| `DATABASE_URL` | Prisma runtime connection. On Vercel, use Neon’s **pooled** URL (hostname contains `-pooler`, typically `?sslmode=require`). Add `pgbouncer=true` (and `connection_limit=1` on serverless). |
+| `DATABASE_URL_UNPOOLED` | Direct Postgres URL for `prisma db push` / migrate (no `-pooler`). Same value as `DATABASE_URL` is fine for local Docker Postgres. |
 | `APP_URL` | Public origin, no trailing slash. Used for Stripe redirects and download links. |
 | `STRIPE_SECRET_KEY` | Stripe secret key (`sk_test_…` while developing). |
 | `STRIPE_WEBHOOK_SECRET` | From `stripe listen` or the Dashboard webhook. |
@@ -100,30 +108,27 @@ Previews live under `public/media/` (streamable). Masters live under `uploads/` 
 
 ## Deploy on Vercel
 
-SQLite will not survive Vercel’s serverless filesystem. For production:
+The schema already uses PostgreSQL. Neon is the recommended host for Vercel serverless.
 
-1. Create a Postgres database (Neon, Vercel Postgres, or Supabase).
-2. In `prisma/schema.prisma` change the datasource:
+1. Create a Neon database (Vercel Marketplace → Neon, or [neon.tech](https://neon.tech)).
+2. In the Vercel project, set:
+   - `DATABASE_URL` — Neon **pooled** connection string (hostname includes `-pooler`; keep `?sslmode=require` if Neon includes it). For Prisma, add `pgbouncer=true`. On serverless, `connection_limit=1` is a good default.
+   - `DATABASE_URL_UNPOOLED` — Neon **direct** connection string (no `-pooler`) so `prisma db push` can run DDL without PgBouncer.
+3. Store paid files on persistent object storage (S3, Cloudflare R2, or Vercel Blob) and point `UPLOAD_DIR` at a writable disk only if you use a VPS. On Vercel, swap `src/lib/storage.ts` to your bucket when you outgrow local disk.
+4. Set `APP_URL` to `https://your-domain`.
+5. Set `ALLOW_DEMO_CHECKOUT=false` and strong admin/download secrets.
+6. Deploy. `postinstall` and `build` run `prisma generate` only — they do **not** push schema or seed.
 
-```prisma
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-```
+### Production database (one-shot, not every build)
 
-3. Set `DATABASE_URL` on Vercel to the pooled Postgres URL.
-4. Store paid files on persistent object storage (S3, Cloudflare R2, or Vercel Blob) and point `UPLOAD_DIR` at a writable disk only if you use a VPS. On Vercel, swap `src/lib/storage.ts` to your bucket when you outgrow local disk.
-5. Set `APP_URL` to `https://your-domain`.
-6. Set `ALLOW_DEMO_CHECKOUT=false` and strong admin/download secrets.
-7. Deploy. The `postinstall` script runs `prisma generate`. After first deploy, run `npx prisma db push` (or `migrate deploy`) against production, then seed if you want the demo catalogue:
+After `DATABASE_URL` / `DATABASE_URL_UNPOOLED` are set, apply the schema and optionally seed **once** from your machine (or any environment with the production URLs). Do not add `db push` to the Vercel build command.
 
 ```bash
 npx prisma db push
-npx tsx prisma/seed.ts
+npm run db:seed
 ```
 
-Alternatively host on Railway, Fly.io, or a VPS if you prefer keeping SQLite and local `uploads/`.
+`npm run db:bootstrap` is the same pair of commands. Re-run only when the schema or demo catalogue needs updating.
 
 ## Pages
 
